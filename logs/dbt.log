@@ -1,0 +1,8 @@
+==================== 2026-07-08T09:45:33.798899Z | 019f411e-515c-7b82-b502-b98cfdd05b43 ====================
+==================== 2026-07-08T09:45:43.909220Z | 019f411e-78e1-7642-afc6-138e53735bde ====================
+09:45:43.909986 [info ]: Installing dbt project and profile setup
+09:45:43.916644 [info ]: Warning A dbt_project.yml already exists in this directory; skipping sample project creation.
+09:45:43.920198 [info ]: Info Created .vscode/extensions.json with dbt extension recommendation
+09:45:43.921760 [info ]: Info Setting up your profile...
+09:45:43.922307 [info ]: Info Creating new profile...
+09:45:50.671380 [info ]: No dbt_cloud.yml found - proceeding without cloud pre-population
