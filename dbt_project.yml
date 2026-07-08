@@ -20,6 +20,4 @@ clean-targets:
 
 models:
   my_dbt_project:
-    newFolder1:
-      +materialized: table
-      
+    +materialized: view
