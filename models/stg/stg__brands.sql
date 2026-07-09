@@ -1,4 +1,4 @@
 select
-brand_id as id ,
-brand_name as name
+brand_id,
+brand_name
 from {{ source('localBike', 'brands') }} 

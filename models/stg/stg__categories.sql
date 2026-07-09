@@ -1,4 +1,4 @@
 select 
-category_id as id,
-category_name as name
+category_id,
+category_name
 from {{ source('localBike', 'categories') }}

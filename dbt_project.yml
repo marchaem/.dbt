@@ -21,3 +21,10 @@ clean-targets:
 models:
   my_dbt_project:
     +materialized: view
+    +schema: dbo
+    stg:
+      +materialized: view
+    int:
+      +materialized: view
+    mart:
+      +materialized: table
