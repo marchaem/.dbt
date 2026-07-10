@@ -2,7 +2,7 @@ select
     stores.store_id as store_id,
     brands.brand_id as brand_id,
     products.product_id as product_id,
-    sum(stocks.quantity) as quantity
+    sum(stocks.quantity) as stocks
 from {{ ref('stg__stores') }} as stores
 left join {{ ref('stg__stocks') }} as stocks on stores.store_id = stocks.store_id
 left join {{ ref('stg__products') }} as products on products.product_id = stocks.product_id

@@ -9,15 +9,16 @@ with orders_grouped_by_order_items as (
 
 product_summary as (
     select
-        order_items.order_id as order_id,
+        ord_it.order_id as order_id, 
         products.product_id as product_id,
         brands.brand_id as brand_id,
-        cat.category_id as category_id
-    from {{ ref('stg__order_items') }} as order_items
-    left join {{ ref('stg__products') }} as products on products.product_id = order_items.product_id
+        cat.category_id as category_id,
+        sum(ord_it.list_price * ord_it.quantity * (1 - ord_it.discount)) as total_CA
+    from {{ ref('stg__order_items') }} as ord_it
+    left join {{ ref('stg__products') }} as products on products.product_id = ord_it.product_id
     left join {{ ref('stg__brands') }} as brands on brands.brand_id = products.brand_id
     left join {{ ref('stg__categories') }} as cat on cat.category_id = products.category_id
-    group by order_items.order_id, products.product_id, brands.brand_id, cat.category_id
+    group by ord_it.order_id, products.product_id, brands.brand_id, cat.category_id
 )
 
 select
@@ -25,6 +26,6 @@ select
     ord2.product_id as product_id,
     ord2.brand_id as brand_id,
     ord2.category_id as category_id,
-    ord1.total_CA as total_CA
+    ord2.total_CA as total_CA
 from orders_grouped_by_order_items as ord1
 left join product_summary as ord2 on ord1.order_id = ord2.order_id
