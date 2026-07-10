@@ -1,5 +1,5 @@
 select
-concat(order_id,'_',customer_id) as order_id,
+order_id,
 order_status,
 order_date,
 required_date,

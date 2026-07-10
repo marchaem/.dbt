@@ -15,13 +15,16 @@ with orders_grouped_by_order_items as (
     staf.store_id
     from {{ ref('stg__orders') }} as ord
     left join {{ ref('stg__staffs') }} as staf on ord.staff_id=staf.staff_id
-    where staffs.active=true
-    group by ord.order_id
+    where staf.active=1
+    group by ord.order_id, staf.staff_id,staf.manager_id,staf.store_id
 )
 
 
 select
-ord.order_id as order_id,
-sum(ord2.total_CA) as total_CA
+ord1.order_id as order_id,
+ord1.total_CA as total_CA,
+ord2.staff_id as staff_id,
+ord2.manager_id as manager_id,
+ord2.store_id as store_id
 from orders_grouped_by_order_items as ord1
 inner join orders_grouped_by_staff as ord2 on ord1.order_id=ord2.order_id
