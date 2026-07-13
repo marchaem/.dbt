@@ -1,7 +1,6 @@
 SELECT
 staff_id,
-first_name,
-last_name,
+CONCAT(first_name,'-',last_name) as full_name,
 email,
 phone,
 active,

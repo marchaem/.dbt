@@ -1,5 +1,5 @@
 select
-product_id as id,
+product_id,
 product_name as name,
 brand_id,
 category_id,
