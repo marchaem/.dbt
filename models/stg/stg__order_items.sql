@@ -1,3 +1,7 @@
+{{ config(
+    materialized='view'
+) }}
+
 select
 order_id, 
 concat(order_id,'_',item_id,'_',product_id) as orderitem_id,

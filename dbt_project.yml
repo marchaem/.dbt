@@ -23,7 +23,7 @@ models:
     +materialized: view
     +schema: dbo
     stg:
-      +materialized: view
+      +materialized: table
     int:
       +materialized: view
     mart:

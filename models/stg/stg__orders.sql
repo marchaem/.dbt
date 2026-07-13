@@ -1,3 +1,8 @@
+{{ config(
+    materialized='view'
+) }}
+
+
 select
 order_id,
 order_status,

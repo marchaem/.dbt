@@ -172,7 +172,6 @@ sources:
           - name: manager_id
             description: "Identifier for the staff member's manager."
             tests:
-              # Self-referencing foreign key to the same table
               - relationships:
                   to: source('your_source_name', 'staffs')
                   field: staff_id
