@@ -5,206 +5,270 @@ sources:
     description: "Source containing all operational and reference tables from dbo schema."
     schema: dbo
 
-    tables:
-      - name: brands
-        description: "Contains information about product brands."
-        columns:
-          - name: brand_id
-            description: "Unique identifier for each brand."
-            tests:
-              - unique
-              - not_null
-          - name: brand_name
-            description: "Name of the brand."
-            tests:
-              - not_null
+models:
+  - name: fact_Turnover_brands
+    description: "Fact table summarizing turnover metrics by brand."
+    columns:
+      - name: brand_id
+        description: "Unique identifier for each brand."
+      - name: CA
+        description: "Turnover or revenue amount for the brand."
+      - name: total_CA
+        description: "Total turnover for the brand."
 
-      - name: categories
-        description: "Product category reference data."
-        columns:
-          - name: category_id
-            description: "Unique identifier for each product category."
-            tests:
-              - not_null
-          - name: category_name
-            description: "Name of the product category."
-            tests:
-              - not_null
+  - name: fact_Turnover_operations
+    description: "Fact table capturing turnover by operations or transactions."
+    columns:
+      - name: order_id
+        description: "Unique identifier for the order or operation."
+      - name: staff_id
+        description: "Identifier for the staff involved in the operation."
+      - name: store_id
+        description: "Identifier for the store location."
+      - name: CA
+        description: "Turnover or revenue amount for the operation."
 
-      - name: customers
-        description: "List of customers and related contact information."
-        columns:
-          - name: customer_id
-            description: "Unique identifier for each customer."
-            tests:
-              - unique
-              - not_null
-          - name: first_name
-            description: "Customer's first name."
-            tests:
-              - not_null
-          - name: last_name
-            description: "Customer's last name."
-            tests:
-              - not_null
-          - name: email
-            description: "Customer's email address."
-            tests:
-              - not_null
-
-      - name: order_items
-        description: "Details about products included within each order."
-        columns:
-          - name: order_id
-            description: "Identifier for the associated order."
-            tests:
-              - not_null
-              - relationships:
-                  to: source('your_source_name', 'orders')
-                  field: order_id
-          - name: item_id
-            description: "Unique identifier for the line item within the order."
-            tests:
-              - not_null
-          - name: product_id
-            description: "Unique identifier for the product."
-            tests:
-              - not_null
-              - relationships:
-                  to: source('your_source_name', 'products')
-                  field: product_id
-          - name: quantity
-            description: "Quantity of the product ordered."
-            tests:
-              - not_null
-          - name: list_price
-            description: "List price per item."
-            tests:
-              - not_null
-
-      - name: orders
-        description: "Order header information for each customer purchase."
-        columns:
-          - name: order_id
-            description: "Unique identifier for each order."
-            tests:
-              - unique
-              - not_null
-          - name: customer_id
-            description: "Unique identifier for the customer placing the order."
-            tests:
-              - relationships:
-                  to: source('your_source_name', 'customers')
-                  field: customer_id
-          - name: order_status
-            description: "Status of the order."
-            tests:
-              - not_null
-          - name: order_date
-            description: "Date the order was placed."
-            tests:
-              - not_null
-          - name: store_id
-            description: "Identifier for the store handling the order."
-            tests:
-              - not_null
-              - relationships:
-                  to: source('your_source_name', 'stores')
-                  field: store_id
-          - name: staff_id
-            description: "Identifier for the staff member responsible for the order."
-            tests:
-              - not_null
-              - relationships:
-                  to: source('your_source_name', 'staffs')
-                  field: staff_id
-
-      - name: products
-        description: "Product master data for goods available for sale."
-        columns:
-          - name: product_id
-            description: "Unique identifier for each product."
-            tests:
-              - not_null
-          - name: product_name
-            description: "Name of the product."
-            tests:
-              - not_null
-          - name: brand_id
-            description: "Identifier for the product brand."
-            tests:
-              - not_null
-              - relationships:
-                  to: source('your_source_name', 'brands')
-                  field: brand_id
-          - name: category_id
-            description: "Identifier for the product category."
-            tests:
-              - not_null
-              - relationships:
-                  to: source('your_source_name', 'categories')
-                  field: category_id
-
-      - name: staffs
-        description: "Employee records for staff working at stores."
-        columns:
-          - name: staff_id
-            description: "Unique identifier for each staff member."
-            tests:
-              - not_null
-          - name: first_name
-            description: "Staff member's first name."
-            tests:
-              - not_null
-          - name: last_name
-            description: "Staff member's last name."
-            tests:
-              - not_null
-          - name: email
-            description: "Staff member's email address."                          
-          - name: store_id
-            description: "Identifier for the store the staff member belongs to."
-            tests:
-              - not_null
-              - relationships:
-                  to: source('your_source_name', 'stores')
-                  field: store_id
-          - name: manager_id
-            description: "Identifier for the staff member's manager."
-            tests:
-              - relationships:
-                  to: source('your_source_name', 'staffs')
-                  field: staff_id
-
-      - name: stores
-        description: "Master data for store locations with contact information."
-        columns:
-          - name: store_id
-            description: "Unique identifier for each store."
-            tests:
-              - unique
-              - not_null
-          - name: store_name
-            description: "Name of the store."
-            tests:
-              - not_null
-
+  - name: fact_stocks
+    description: "Stock fact table holding product inventory information."
+    columns:
+      - name: product_id
+        description: "Unique identifier for each product."
+      - name: store_id
+        description: "Identifier for each store location."
       - name: stocks
-        description: "Inventory details showing product availability by store."
-        columns:
-          - name: store_id
-            description: "Composite primary key component referencing the store."
-            tests:
-              - not_null
-              - relationships:
-                  to: source('your_source_name', 'stores')
-                  field: store_id
-          - name: product_id
-            description: "Composite primary key component referencing the product."
-            tests:
-              - not_null
-              - relationships:
-                  to: source('your_source_name', 'products')
-                  field: product_id
-          - name: quantity
-            description: "Quantity of products in stock."
+        description: "Available stock quantity."
+
+  - name: int__orders_brand
+    description: "Intermediate view linking orders to brand information."
+    columns:
+      - name: order_id
+        description: "Unique identifier for each order."
+      - name: brand_id
+        description: "Unique identifier for the brand."
+      - name: category_id
+        description: "Unique identifier for the category."
+      - name: product_id
+        description: "Unique identifier for the product."
+
+  - name: int__orders_operations
+    description: "Intermediate view linking orders to operational details."
+    columns:
+      - name: order_id
+        description: "Unique identifier for each order."
+      - name: staff_id
+        description: "Identifier for the staff member."
+      - name: store_id
+        description: "Identifier for the store location."
+
+  - name: int__stocks
+    description: "Intermediate view for stock information."
+    columns:
+      - name: product_id
+        description: "Unique identifier for each product."
+      - name: store_id
+        description: "Identifier for each store."
+      - name: stocks
+        description: "Stock quantity."
+
+  - name: brands
+    description: "Contains information about product brands."
+    columns:
+      - name: brand_id
+        description: "Unique identifier for each brand."
+        tests:
+          - unique
+          - not_null
+      - name: brand_name
+        description: "Name of the brand."
+        tests:
+          - not_null
+
+  - name: categories
+    description: "Product category reference data."
+    columns:
+      - name: category_id
+        description: "Unique identifier for each product category."
+        tests:
+          - not_null
+      - name: category_name
+        description: "Name of the product category."
+        tests:
+          - not_null
+
+  - name: customers
+    description: "List of customers and related contact information."
+    columns:
+      - name: customer_id
+        description: "Unique identifier for each customer."
+        tests:
+          - unique
+          - not_null
+      - name: first_name
+        description: "Customer's first name."
+        tests:
+          - not_null
+      - name: last_name
+        description: "Customer's last name."
+        tests:
+          - not_null
+      - name: email
+        description: "Customer's email address."
+        tests:
+          - not_null
+
+  - name: order_items
+    description: "Details about products included within each order."
+    columns:
+      - name: order_id
+        description: "Identifier for the associated order."
+        tests:
+          - not_null
+          - relationships:
+              to: source('localBike', 'orders')
+              field: order_id
+      - name: item_id
+        description: "Unique identifier for the line item within the order."
+        tests:
+          - not_null
+      - name: product_id
+        description: "Unique identifier for the product."
+        tests:
+          - not_null
+          - relationships:
+              to: source('localBike', 'products')
+              field: product_id
+      - name: quantity
+        description: "Quantity of the product ordered."
+        tests:
+          - not_null
+      - name: list_price
+        description: "List price per item."
+        tests:
+          - not_null
+
+  - name: orders
+    description: "Order header information for each customer purchase."
+    columns:
+      - name: order_id
+        description: "Unique identifier for each order."
+        tests:
+          - unique
+          - not_null
+      - name: customer_id
+        description: "Unique identifier for the customer placing the order."
+        tests:
+          - relationships:
+              to: source('localBike', 'customers')
+              field: customer_id
+      - name: order_status
+        description: "Status of the order."
+        tests:
+          - not_null
+      - name: order_date
+        description: "Date the order was placed."
+        tests:
+          - not_null
+      - name: store_id
+        description: "Identifier for the store handling the order."
+        tests:
+          - not_null
+          - relationships:
+              to: source('localBike', 'stores')
+              field: store_id
+      - name: staff_id
+        description: "Identifier for the staff member responsible for the order."
+        tests:
+          - not_null
+          - relationships:
+              to: source('localBike', 'staffs')
+              field: staff_id
+
+  - name: products
+    description: "Product master data for goods available for sale."
+    columns:
+      - name: product_id
+        description: "Unique identifier for each product."
+        tests:
+          - not_null
+      - name: product_name
+        description: "Name of the product."
+        tests:
+          - not_null
+      - name: brand_id
+        description: "Identifier for the product brand."
+        tests:
+          - not_null
+          - relationships:
+              to: source('localBike', 'brands')
+              field: brand_id
+      - name: category_id
+        description: "Identifier for the product category."
+        tests:
+          - not_null
+          - relationships:
+              to: source('localBike', 'categories')
+              field: category_id
+
+  - name: staffs
+    description: "Employee records for staff working at stores."
+    columns:
+      - name: staff_id
+        description: "Unique identifier for each staff member."
+        tests:
+          - not_null
+      - name: first_name
+        description: "Staff member's first name."
+        tests:
+          - not_null
+      - name: last_name
+        description: "Staff member's last name."
+        tests:
+          - not_null
+      - name: email
+        description: "Staff member's email address."
+      - name: store_id
+        description: "Identifier for the store the staff member belongs to."
+        tests:
+          - not_null
+          - relationships:
+              to: source('localBike', 'stores')
+              field: store_id
+      - name: manager_id
+        description: "Identifier for the staff member's manager."
+        tests:
+          - relationships:
+              to: source('localBike', 'staffs')
+              field: staff_id
+
+  - name: stores
+    description: "Master data for store locations with contact information."
+    columns:
+      - name: store_id
+        description: "Unique identifier for each store."
+        tests:
+          - unique
+          - not_null
+      - name: store_name
+        description: "Name of the store."
+        tests:
+          - not_null
+
+  - name: stocks
+    description: "Inventory details showing product availability by store."
+    columns:
+      - name: store_id
+        description: "Composite primary key component referencing the store."
+        tests:
+          - not_null
+          - relationships:
+              to: source('localBike', 'stores')
+              field: store_id
+      - name: product_id
+        description: "Composite primary key component referencing the product."
+        tests:
+          - not_null
+          - relationships:
+              to: source('localBike', 'products')
+              field: product_id
+      - name: quantity
+        description: "Quantity of products in stock."
